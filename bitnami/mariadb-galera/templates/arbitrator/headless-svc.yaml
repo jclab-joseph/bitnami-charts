@@ -1,0 +1,49 @@
+{{- if (include "mariadb-galera.arbitrator.enabled" .) }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mariadb-galera.arbitrator.service.nameOverride" . }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: arbitrator
+    {{- if .Values.commonLabels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
+    {{- end }}
+  {{- if or .Values.arbitrator.service.annotations .Values.commonAnnotations }}
+  annotations:
+    {{- if .Values.arbitrator.service.annotations }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.arbitrator.service.annotations "context" $) | nindent 4 }}
+    {{- end }}
+    {{- if .Values.commonAnnotations }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+    {{- end }}
+  {{- end }}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    {{- $appProtocolAvailable := (semverCompare ">=1.20-0" (include "common.capabilities.kubeVersion" .)) }}
+    - name: galera
+      port: 4567
+      targetPort: galera
+      {{- if $appProtocolAvailable }}
+      appProtocol: mysql
+      {{- end }}
+    - name: ist
+      port: 4568
+      targetPort: ist
+      {{- if $appProtocolAvailable }}
+      appProtocol: mysql
+      {{- end }}
+    - name: sst
+      port: 4444
+      targetPort: sst
+      {{- if $appProtocolAvailable }}
+      appProtocol: mysql
+      {{- end }}
+    {{- if .Values.arbitrator.service.extraPorts }}
+    {{- include "common.tplvalues.render" (dict "value" .Values.arbitrator.service.extraPorts "context" $) | nindent 4 }}
+    {{- end }}
+  selector: {{- include "common.labels.matchLabels" . | nindent 4 }}
+    app.kubernetes.io/component: arbitrator
+{{- end }}

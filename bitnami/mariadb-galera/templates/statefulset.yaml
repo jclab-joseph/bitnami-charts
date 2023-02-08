@@ -124,6 +124,9 @@ spec:
             {{- range $e, $i := until (int .Values.replicaCount) }}
             {{- $initialCluster = append $initialCluster (printf "%s-%d.%s-headless.%s.svc.%s" $fullName $i $fullName $releaseName $clusterDomain) }}
             {{- end }}
+            {{- if (include "mariadb-galera.arbitrator.enabled" .) }}
+            {{- $initialCluster = append $initialCluster (printf "%s-arbitrator-0.%s-arbitrator-headless.%s.svc.%s" $fullName $fullName $releaseName $clusterDomain) }}
+            {{- end }}
             - name: MARIADB_GALERA_CLUSTER_ADDRESS
               value: {{ printf "gcomm://%s" (join "," $initialCluster) | quote }}
             - name: MARIADB_ROOT_USER

@@ -197,3 +197,45 @@ Return the path to the CA cert file.
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create a default galera arbitrator service name which can be overridden.
+*/}}
+{{- define "mariadb-galera.arbitrator.service.nameOverride" -}}
+    {{- if and .Values.arbitrator.service .Values.arbitrator.service.nameOverride -}}
+        {{- print .Values.arbitrator.service.nameOverride -}}
+    {{- else -}}
+        {{- printf "%s-arbitrator-headless" (include "common.names.fullname" .) -}}
+    {{- end }}
+{{- end }}
+
+{{/*
+Return true if the arbitrator should be deployed
+*/}}
+{{- define "mariadb-galera.arbitrator.enabled" -}}
+{{- if .Values.arbitrator.enabled }}
+    {{- true -}}
+{{- else -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the configmap with the mariadb-galera&reg; configuration for the arbitrator
+*/}}
+{{- define "mariadb-galera.arbitrator.configmapName" -}}
+{{- if .Values.arbitrator.existingConfigmap -}}
+    {{- printf "%s" (tpl .Values.arbitrator.existingConfigmap $) -}}
+{{- else -}}
+    {{- printf "%s-arbitrator" (include "common.names.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return true if a configmap object should be created for mariadb-galera&reg; arbitrator
+*/}}
+{{- define "mariadb-galera.arbitrator.createConfigmap" -}}
+{{- if and .Values.arbitrator.enabled .Values.arbitrator.configuration (not .Values.arbitrator.existingConfigmap) }}
+    {{- true -}}
+{{- else -}}
+{{- end -}}
+{{- end -}}

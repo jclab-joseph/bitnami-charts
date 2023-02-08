@@ -75,9 +75,9 @@ diagnosticMode:
 ## @param image.debug Specify if debug logs should be enabled
 ##
 image:
-  registry: docker.io
-  repository: bitnami/mariadb-galera
-  tag: 10.6.12-debian-11-r0
+  registry: ghcr.io
+  repository: jclab-joseph/mariadb-galera
+  tag: 10.5-debian-11-9e8dc1a1
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -314,6 +314,318 @@ galera:
     ## If it is not force, a random password will be generated.
     ##
     forcePassword: false
+## @section Arbitrator parameters
+##
+arbitrator:
+  ## @param arbitrator.enabled Enable deploying the arbitrator
+  ##   https://galeracluster.com/library/documentation/arbitrator.html
+  ##
+  enabled: true
+  ## @param arbitrator.hostAliases Add deployment host aliases
+  ## https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
+  ##
+  hostAliases: []
+  ## @param arbitrator.configuration arbitrator configuration file to be used
+  ##   http://docs.mongodb.org/manual/reference/configuration-options/
+  ##
+  configuration: ""
+  ## @param arbitrator.existingConfigmap Name of existing ConfigMap with arbitrator configuration
+  ## NOTE: When it's set the arbitrator.configuration parameter is ignored
+  ##
+  existingConfigmap: ""
+  ## Command and args for running the container (set to default if not set). Use array form
+  ## @param arbitrator.command Override default container command (useful when using custom images)
+  ## @param arbitrator.args Override default container args (useful when using custom images)
+  ##
+  command:
+    - /opt/bitnami/scripts/mariadb-galera/garbd.sh
+  args: []
+  ## @param arbitrator.extraFlags arbitrator additional command line flags
+  ## Example:
+  ## extraFlags:
+  ##  - "--wiredTigerCacheSizeGB=2"
+  ##
+  extraFlags: []
+  ## @param arbitrator.extraEnvVars Extra environment variables to add to arbitrator pods
+  ## E.g:
+  ## extraEnvVars:
+  ##   - name: FOO
+  ##     value: BAR
+  ##
+  extraEnvVars: []
+  ## @param arbitrator.extraEnvVarsCM Name of existing ConfigMap containing extra env vars
+  ##
+  extraEnvVarsCM: ""
+  ## @param arbitrator.extraEnvVarsSecret Name of existing Secret containing extra env vars (in case of sensitive data)
+  ##
+  extraEnvVarsSecret: ""
+  ## @param arbitrator.annotations Additional labels to be added to the arbitrator statefulset
+  ##
+  annotations: {}
+  ## @param arbitrator.labels Annotations to be added to the arbitrator statefulset
+  ##
+  labels: {}
+  ## @param arbitrator.topologySpreadConstraints MongoDB(&reg;) Spread Constraints for arbitrator Pods
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+  ##
+  topologySpreadConstraints: []
+  ## @param arbitrator.lifecycleHooks LifecycleHook for the arbitrator container to automate configuration before or after startup
+  ##
+  lifecycleHooks: {}
+  ## @param arbitrator.terminationGracePeriodSeconds arbitrator Termination Grace Period
+  ##
+  terminationGracePeriodSeconds: ""
+  ## @param arbitrator.updateStrategy.type Strategy that will be employed to update Pods in the StatefulSet
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+  ## updateStrategy:
+  ##  type: RollingUpdate
+  ##  rollingUpdate:
+  ##    maxSurge: 25%
+  ##    maxUnavailable: 25%
+  ##
+  updateStrategy:
+    type: RollingUpdate
+  ## @param arbitrator.podManagementPolicy Pod management policy for MongoDB(&reg;)
+  ## Should be initialized one by one when building the replicaset for the first time
+  ##
+  podManagementPolicy: OrderedReady
+  ## @param arbitrator.schedulerName Name of the scheduler (other than default) to dispatch pods
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  schedulerName: ""
+  ## @param arbitrator.podAffinityPreset arbitrator Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+  ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+  ##
+  podAffinityPreset: ""
+  ## @param arbitrator.podAntiAffinityPreset arbitrator Pod anti-affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+  ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+  ##
+  podAntiAffinityPreset: soft
+  ## Node affinity preset
+  ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity
+  ##
+  nodeAffinityPreset:
+    ## @param arbitrator.nodeAffinityPreset.type arbitrator Node affinity preset type. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+    ##
+    type: ""
+    ## @param arbitrator.nodeAffinityPreset.key arbitrator Node label key to match Ignored if `affinity` is set.
+    ## E.g.
+    ## key: "kubernetes.io/e2e-az-name"
+    ##
+    key: ""
+    ## @param arbitrator.nodeAffinityPreset.values arbitrator Node label values to match. Ignored if `affinity` is set.
+    ## E.g.
+    ## values:
+    ##   - e2e-az1
+    ##   - e2e-az2
+    ##
+    values: []
+  ## @param arbitrator.affinity arbitrator Affinity for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## Note: arbitrator.podAffinityPreset, arbitrator.podAntiAffinityPreset, and arbitrator.nodeAffinityPreset will be ignored when it's set
+  ##
+  affinity: {}
+  ## @param arbitrator.nodeSelector arbitrator Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+  ## @param arbitrator.tolerations arbitrator Tolerations for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+  ## @param arbitrator.podLabels arbitrator pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  ##
+  podLabels: {}
+  ## @param arbitrator.podAnnotations arbitrator Pod annotations
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  podAnnotations: {}
+  ## @param arbitrator.priorityClassName Name of the existing priority class to be used by arbitrator pod(s)
+  ## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+  ##
+  priorityClassName: ""
+  ## @param arbitrator.runtimeClassName Name of the runtime class to be used by arbitrator pod(s)
+  ## ref: https://kubernetes.io/docs/concepts/containers/runtime-class/
+  ##
+  runtimeClassName: ""
+  ## MongoDB(&reg;) arbitrator pods' Security Context.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+  ## @param arbitrator.podSecurityContext.enabled Enable arbitrator pod(s)' Security Context
+  ## @param arbitrator.podSecurityContext.fsGroup Group ID for the volumes of the arbitrator pod(s)
+  ## @param arbitrator.podSecurityContext.sysctls sysctl settings of the arbitrator pod(s)'
+  ##
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001
+    ## sysctl settings
+    ## Example:
+    ## sysctls:
+    ## - name: net.core.somaxconn
+    ##   value: "10000"
+    ##
+    sysctls: []
+  ## MongoDB(&reg;) arbitrator containers' Security Context (only main container).
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param arbitrator.containerSecurityContext.enabled Enable arbitrator container(s)' Security Context
+  ## @param arbitrator.containerSecurityContext.runAsUser User ID for the arbitrator container
+  ## @param arbitrator.containerSecurityContext.runAsNonRoot Set arbitrator containers' Security Context runAsNonRoot
+  ##
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1001
+    runAsNonRoot: true
+  ## MongoDB(&reg;) arbitrator containers' resource requests and limits.
+  ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  ## We usually recommend not to specify default resources and to leave this as a conscious
+  ## choice for the user. This also increases chances charts run on environments with little
+  ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+  ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  ## @param arbitrator.resources.limits The resources limits for arbitrator containers
+  ## @param arbitrator.resources.requests The requested resources for arbitrator containers
+  ##
+  resources:
+    ## Example:
+    ## limits:
+    ##    cpu: 100m
+    ##    memory: 128Mi
+    ##
+    limits: {}
+    ## Examples:
+    ## requests:
+    ##    cpu: 100m
+    ##    memory: 128Mi
+    ##
+    requests: {}
+  ## @param arbitrator.containerPorts.mongodb MongoDB(&reg;) arbitrator container port
+  ##
+  containerPorts:
+    mongodb: 27017
+  ## MongoDB(&reg;) arbitrator pods' liveness probe. Evaluated as a template.
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+  ## @param arbitrator.livenessProbe.enabled Enable livenessProbe
+  ## @param arbitrator.livenessProbe.initialDelaySeconds Initial delay seconds for livenessProbe
+  ## @param arbitrator.livenessProbe.periodSeconds Period seconds for livenessProbe
+  ## @param arbitrator.livenessProbe.timeoutSeconds Timeout seconds for livenessProbe
+  ## @param arbitrator.livenessProbe.failureThreshold Failure threshold for livenessProbe
+  ## @param arbitrator.livenessProbe.successThreshold Success threshold for livenessProbe
+  ##
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 20
+    timeoutSeconds: 10
+    failureThreshold: 6
+    successThreshold: 1
+  ## MongoDB(&reg;) arbitrator pods' readiness probe. Evaluated as a template.
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+  ## @param arbitrator.readinessProbe.enabled Enable readinessProbe
+  ## @param arbitrator.readinessProbe.initialDelaySeconds Initial delay seconds for readinessProbe
+  ## @param arbitrator.readinessProbe.periodSeconds Period seconds for readinessProbe
+  ## @param arbitrator.readinessProbe.timeoutSeconds Timeout seconds for readinessProbe
+  ## @param arbitrator.readinessProbe.failureThreshold Failure threshold for readinessProbe
+  ## @param arbitrator.readinessProbe.successThreshold Success threshold for readinessProbe
+  ##
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 20
+    timeoutSeconds: 10
+    failureThreshold: 6
+    successThreshold: 1
+  ## MongoDB(&reg;) arbitrator pods' startup probe. Evaluated as a template.
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+  ## @param arbitrator.startupProbe.enabled Enable startupProbe
+  ## @param arbitrator.startupProbe.initialDelaySeconds Initial delay seconds for startupProbe
+  ## @param arbitrator.startupProbe.periodSeconds Period seconds for startupProbe
+  ## @param arbitrator.startupProbe.timeoutSeconds Timeout seconds for startupProbe
+  ## @param arbitrator.startupProbe.failureThreshold Failure threshold for startupProbe
+  ## @param arbitrator.startupProbe.successThreshold Success threshold for startupProbe
+  ##
+  startupProbe:
+    enabled: false
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 30
+  ## @param arbitrator.customLivenessProbe Override default liveness probe for arbitrator containers
+  ## Ignored when arbitrator.livenessProbe.enabled=true
+  ##
+  customLivenessProbe: {}
+  ## @param arbitrator.customReadinessProbe Override default readiness probe for arbitrator containers
+  ## Ignored when arbitrator.readinessProbe.enabled=true
+  ##
+  customReadinessProbe: {}
+  ## @param arbitrator.customStartupProbe Override default startup probe for arbitrator containers
+  ## Ignored when arbitrator.startupProbe.enabled=true
+  ##
+  customStartupProbe: {}
+  ## @param arbitrator.initContainers Add additional init containers for the arbitrator pod(s)
+  ## Example:
+  ## initContainers:
+  ##   - name: your-image-name
+  ##     image: your-image
+  ##     imagePullPolicy: Always
+  ##     ports:
+  ##       - name: portname
+  ##         containerPort: 1234
+  ##
+  initContainers: []
+  ## @param arbitrator.sidecars Add additional sidecar containers for the arbitrator pod(s)
+  ## Example:
+  ## sidecars:
+  ##   - name: your-image-name
+  ##     image: your-image
+  ##     imagePullPolicy: Always
+  ##     ports:
+  ##       - name: portname
+  ##         containerPort: 1234
+  ##
+  sidecars: []
+  ## @param arbitrator.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the arbitrator container(s)
+  ## Examples:
+  ## extraVolumeMounts:
+  ##   - name: extras
+  ##     mountPath: /usr/share/extras
+  ##     readOnly: true
+  ##
+  extraVolumeMounts: []
+  ## @param arbitrator.extraVolumes Optionally specify extra list of additional volumes to the arbitrator statefulset
+  ## extraVolumes:
+  ##   - name: extras
+  ##     emptyDir: {}
+  ##
+  extraVolumes: []
+  ## MongoDB(&reg;) arbitrator Pod Disruption Budget configuration
+  ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  ##
+  pdb:
+    ## @param arbitrator.pdb.create Enable/disable a Pod Disruption Budget creation for arbitrator pod(s)
+    ##
+    create: false
+    ## @param arbitrator.pdb.minAvailable Minimum number/percentage of arbitrator pods that should remain scheduled
+    ##
+    minAvailable: 1
+    ## @param arbitrator.pdb.maxUnavailable Maximum number/percentage of arbitrator pods that may be made unavailable
+    ##
+    maxUnavailable: ""
+  ## MongoDB(&reg;) arbitrator service parameters
+  ##
+  service:
+    ## @param arbitrator.service.nameOverride The arbitrator service name
+    ##
+    nameOverride: ""
+    ## @param arbitrator.service.ports.mongodb MongoDB(&reg;) service port
+    ##
+    ports:
+      mongodb: 27017
+    ## @param arbitrator.service.extraPorts Extra ports to expose (normally used with the `sidecar` value)
+    ##
+    extraPorts: []
+    ## @param arbitrator.service.annotations Provide any additional annotations that may be required
+    ##
+    annotations: {}
 ## LDAP configuration
 ## @param ldap.enabled Enable LDAP support
 ## @param ldap.uri LDAP URL beginning in the form `ldap`
@@ -513,7 +825,7 @@ initdbScriptsConfigMap: ""
 extraFlags: ""
 ## @param replicaCount Desired number of cluster nodes
 ##
-replicaCount: 3
+replicaCount: 2
 ## @param updateStrategy.type updateStrategy for MariaDB Master StatefulSet
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
 ##
